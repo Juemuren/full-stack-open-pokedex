@@ -1,3 +1,6 @@
 webpack.config.js
+playwright.config.js
+test-results/
+playwright-report/
 node_modules/
 dist/
