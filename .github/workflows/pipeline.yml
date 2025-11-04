@@ -27,7 +27,7 @@ jobs:
         run: |
           echo "deploy simulation"
   tag_release:
-    if: ${{ github.event_name == 'push' }}
+    if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message), '#skip') }}
     needs: [simple_deployment_pipeline]
     runs-on: ubuntu-latest
     permissions:
