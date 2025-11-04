@@ -26,6 +26,20 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         run: |
           echo "deploy simulation"
+      - name: Discord notify success
+        uses: rjstone/discord-webhook-notify@v2
+        if: ${{ success() }}
+        with:
+            webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+            severity: info
+            details: A new version of Pokedex deployed
+      - name: Discord notify failure
+        uses: rjstone/discord-webhook-notify@v2
+        if: ${{ failure() }}
+        with:
+            webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+            severity: info
+            details: Build failed
   tag_release:
     if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message), '#skip') }}
     needs: [simple_deployment_pipeline]
