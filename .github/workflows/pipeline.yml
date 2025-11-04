@@ -9,7 +9,7 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  simple_deployment_pipeline:
+  ci:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -22,27 +22,26 @@ jobs:
         run: npm run eslint
       - run: npm run build
       - run: npm test
+
+  deploy:
+    needs: ci
+    if: ${{ github.event_name == 'push' }}
+    runs-on: ubuntu-latest
+    steps:
       - name: Deploy
-        if: ${{ github.event_name == 'push' }}
         run: |
           echo "deploy simulation"
-      - name: Discord notify success
-        uses: rjstone/discord-webhook-notify@v2
-        if: ${{ success() }}
+      - name: Discord notify
+        uses: sarisia/actions-status-discord@v1
+        if: ${{ always() }}
         with:
-            webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-            severity: info
-            details: A new version of Pokedex deployed
-      - name: Discord notify failure
-        uses: rjstone/discord-webhook-notify@v2
-        if: ${{ failure() }}
-        with:
-            webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-            severity: info
-            details: Build failed
+            webhook: ${{ secrets.DISCORD_WEBHOOK }}
+            title: "deploy"
+            description: Build and Deploy for a new version Pokedex
+
   tag_release:
+    needs: deploy
     if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message), '#skip') }}
-    needs: [simple_deployment_pipeline]
     runs-on: ubuntu-latest
     permissions:
       contents: write
