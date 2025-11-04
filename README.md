@@ -13,3 +13,7 @@ Start by running `npm install` inside the project folder
 `npm run eslint` to run eslint
 `npm run build` to make a production build
 `npm run start-prod` to run your production build
+
+## 待解决的问题
+
+- 11.10-11.12 由于没有信用卡，[部署相关的练习](https://fullstackopen.com/en/part11/deployment#exercises-11-10-11-12-fly-io)又无法完成了。
