@@ -26,3 +26,18 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         run: |
           echo "deploy simulation"
+  tag_release:
+    if: ${{ github.event_name == 'push' }}
+    needs: [simple_deployment_pipeline]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: '0'
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@1.75.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BUMP: patch
