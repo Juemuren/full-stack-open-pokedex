@@ -25,7 +25,7 @@ jobs:
 
   deploy:
     needs: ci
-    if: ${{ github.event_name == 'push' }}
+    if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message), '#skip') }}
     runs-on: ubuntu-latest
     steps:
       - name: Deploy
@@ -41,7 +41,7 @@ jobs:
 
   tag_release:
     needs: deploy
-    if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message), '#skip') }}
+    if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
